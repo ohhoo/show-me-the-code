@@ -10,8 +10,6 @@ import random
 import string
 from typing import List
 
-import MySQLdb
-
 
 def gen_random_code(length:int, num:int)->List:
     '''生成num个长度为lenght的随机优惠券
@@ -23,6 +21,7 @@ def gen_random_code(length:int, num:int)->List:
     
     if num < 1:
         print('至少生成1个优惠券')
+        return None
     
     code_list = set()
     
@@ -33,34 +32,9 @@ def gen_random_code(length:int, num:int)->List:
     return list(code_list)
 
 
-def save_coupon_in_db(coupons:List):
-    '''将生成的优惠券存储到mysql数据库中
-    '''
-    db = MySQLdb.connect(
-        host='localhost',
-        user='root',
-        password='123456',
-        database='mycode'
-    )
-    
-    try:
-        cursor = db.cursor()
-        cursor.executemany('INSERT INTO coupon(code) values(%s) ', coupons)
-        db.commit()
-        print("插入完成")
-    except Exception as e:
-        db.rollback()
-        print('插入失败')
-    finally:
-        db.close()
-    
-
 if __name__ == "__main__":
     codes = gen_random_code(20, 200)
     for code in codes:
         print(code)
-    save_coupon_in_db(codes)
     
-
-
 
